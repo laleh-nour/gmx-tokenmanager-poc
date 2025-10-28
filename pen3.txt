@@ -1,0 +1,275 @@
+let { ethers, network } = require("hardhat");
+Uncaught SyntaxError: Identifier 'ethers' has already been declared
+> 
+> let TM_ADDRESS = "0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E";
+Uncaught SyntaxError: Identifier 'TM_ADDRESS' has already been declared
+> let GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+Uncaught SyntaxError: Identifier 'GMX_TIMELOCK' has already been declared
+> let NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266");
+Uncaught SyntaxError: Identifier 'NEW_ADMIN' has already been declared
+> let tm = await ethers.getContractAt("TokenManager", TM_ADDRESS);
+Uncaught SyntaxError: Identifier 'tm' has already been declared
+> console.log("TokenManager connected:", tm.address);
+TokenManager connected: 0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E
+undefined
+> let nonce = await tm.actionsNonce();
+Uncaught SyntaxError: Identifier 'nonce' has already been declared
+> console.log("Current nonce:", nonce.toString());
+Current nonce: 21
+undefined
+> let actionHash = ethers.utils.solidityKeccak256(
+...   ["string", "address", "address", "uint256"],
+...   ["setAdmin", GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber()]
+... );
+Uncaught SyntaxError: Identifier 'actionHash' has already been declared
+> console.log("Action hash:", actionHash);
+Action hash: 0x6922be6aa7792b895ebd15af082c87888867a40d962e4ba6b4845ac3b2849c63
+undefined
+> let pending = await tm.pendingActions(actionHash);
+Uncaught SyntaxError: Identifier 'pending' has already been declared
+> console.log("Pending action exists:", pending);
+Pending action exists: true
+undefined
+> let pending = await tm.pendingActions(actionHash);
+Uncaught SyntaxError: Identifier 'pending' has already been declared
+> console.log("Pending action exists:", pending);
+Pending action exists: true
+undefined
+> let signers = [
+...   "0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5",
+...   "0x881690382102106b00a99E3dB86056D0fC71eee6",
+...   "0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"
+... ];
+undefined
+> let signers = [
+...   "0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5",
+...   "0x881690382102106b00a99E3dB86056D0fC71eee6",
+...   "0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"
+... ];
+Uncaught SyntaxError: Identifier 'signers' has already been declared
+> for (let addr of signers) {
+...   await network.provider.request({ method: "hardhat_impersonateAccount", params: [addr] });
+...   await network.provider.send("hardhat_setBalance", [addr, "0x3635C9ADC5DEA00000"]);
+... }
+undefined
+> for (let addr of signers) {
+...   await network.provider.request({ method: "hardhat_impersonateAccount", params: [addr] });
+...   await network.provider.send("hardhat_setBalance", [addr, "0x3635C9ADC5DEA00000"]);
+... }
+undefined
+> let signer1 = await ethers.getSigner(signers[0]);
+Uncaught SyntaxError: Identifier 'signer1' has already been declared
+> let signer2 = await ethers.getSigner(signers[1]);
+Uncaught SyntaxError: Identifier 'signer2' has already been declared
+> let signer3 = await ethers.getSigner(signers[2]);
+Uncaught SyntaxError: Identifier 'signer3' has already been declared
+> await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+{
+  hash: '0x5c4289998b97fe01501d150dff251c145b8ff53fed88d82655442082ce1f97d9',
+  type: 2,
+  accessList: [],
+  blockHash: '0x7a7545ed942ec9c8a2e1433b53d6f725aeb529d80bcf209cfa54bdcadd23d6bb',
+  blockNumber: 394171052,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  gasPrice: BigNumber { _hex: '0x3b9c3eda', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3b9ca1e3', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0x014c33', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 31,
+  data: '0x75fd490c000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+  r: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  s: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+{
+  hash: '0x82895a9487d5e611a7f3d5d5c3cf0b47727c7c33f3573078ae8d1dd3e301ec90',
+  type: 2,
+  accessList: [],
+  blockHash: '0x94de3f7565793f39d1080b09fc2ab3100a476b7070bc3eb946c8d1c6094544ce',
+  blockNumber: 394171053,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  gasPrice: BigNumber { _hex: '0x3b9c107f', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3b9c6738', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0x014c33', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 32,
+  data: '0x75fd490c000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+  r: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  s: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> try {
+...   await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+  await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+  ^^^^^
+
+Uncaught:
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+> } catch (e) {
+} catch (e) {
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+>   console.log("signer1 already signed");
+signer1 already signed
+undefined
+> }
+}
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+> await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+ProviderError: Error: VM Exception while processing transaction: reverted with reason string 'TokenManager: already signed'
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+ProviderError: Error: VM Exception while processing transaction: reverted with reason string 'TokenManager: already signed'
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> let minAuth = await tm.minAuthorizations();
+undefined
+> console.log("minAuthorizations required:", minAuth.toString());
+minAuthorizations required: 2
+undefined
+> for (let addr of signers) {
+...   let signed = await tm.signedActions(addr, actionHash);
+...   console.log(`Signed by ${addr}:`, signed);
+... }
+Signed by 0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5: true
+Signed by 0x881690382102106b00a99E3dB86056D0fC71eee6: true
+Signed by 0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13: true
+undefined
+> try {
+...   let tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+  let tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+           ^^^^^
+
+Uncaught:
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+>   await tx.wait();
+Uncaught ReferenceError: tx is not defined
+    at REPL508:1:41
+>   console.log("Admin changed successfully:", tx.hash);
+Uncaught ReferenceError: tx is not defined
+> } catch (e) {
+} catch (e) {
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+>   console.log("setAdmin reverted without reason");
+setAdmin reverted without reason
+undefined
+> }
+}
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+> 
+❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊
+
+این هم داده های ترمینال اول
+hardhat_impersonateAccount
+hardhat_setBalance
+hardhat_impersonateAccount
+hardhat_setBalance
+hardhat_impersonateAccount
+hardhat_setBalance
+hardhat_impersonateAccount
+hardhat_setBalance
+hardhat_impersonateAccount
+hardhat_setBalance
+hardhat_impersonateAccount
+hardhat_setBalance
+eth_blockNumber
+eth_chainId (2)
+eth_estimateGas
+eth_feeHistory
+eth_sendTransaction
+  Contract call:    <UnrecognizedContract>
+  Transaction:      0x5c4289998b97fe01501d150dff251c145b8ff53fed88d82655442082ce1f97d9
+  From:             0x3d850acfaa18c58b383fca69d4d867dc5bb697c5
+  To:               0x4e29d2ee6973e5bd093df40ef9d0b28bd56c9e4e
+  Value:            0 ETH
+  Gas used:         79747 of 85043
+  Block #394171052: 0x7a7545ed942ec9c8a2e1433b53d6f725aeb529d80bcf209cfa54bdcadd23d6bb
+
+eth_chainId
+eth_getTransactionByHash
+eth_blockNumber
+eth_chainId (2)
+eth_estimateGas
+eth_feeHistory
+eth_sendTransaction
+  Contract call:    <UnrecognizedContract>
+  Transaction:      0x82895a9487d5e611a7f3d5d5c3cf0b47727c7c33f3573078ae8d1dd3e301ec90
+  From:             0x3d850acfaa18c58b383fca69d4d867dc5bb697c5
+  To:               0x4e29d2ee6973e5bd093df40ef9d0b28bd56c9e4e
+  Value:            0 ETH
+  Gas used:         79747 of 85043
+  Block #394171053: 0x94de3f7565793f39d1080b09fc2ab3100a476b7070bc3eb946c8d1c6094544ce
+
+eth_chainId
+eth_getTransactionByHash
+eth_blockNumber
+eth_chainId (2)
+eth_estimateGas
+  Contract call:    <UnrecognizedContract>
+  From:             0x881690382102106b00a99e3db86056d0fc71eee6
+  To:               0x4e29d2ee6973e5bd093df40ef9d0b28bd56c9e4e
+  Value:            0 ETH
+
+  Error: reverted with reason string 'TokenManager: already signed'
+
+eth_chainId
+eth_estimateGas
+  Contract call:    <UnrecognizedContract>
+  From:             0x2e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13
+  To:               0x4e29d2ee6973e5bd093df40ef9d0b28bd56c9e4e
+  Value:            0 ETH
+
+  Error: reverted with reason string 'TokenManager: already signed'
+
+eth_chainId
+eth_call
+  Contract call:    <UnrecognizedContract>
+  From:             0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:               0x4e29d2ee6973e5bd093df40ef9d0b28bd56c9e4e
+
+eth_chainId
+eth_call
+  Contract call:    <UnrecognizedContract>
+  From:             0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:               0x4e29d2ee6973e5bd093df40ef9d0b28bd56c9e4e
+
+eth_chainId
+eth_call
+  Contract call:    <UnrecognizedContract>
+  From:             0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:               0x4e29d2ee6973e5bd093df40ef9d0b28bd56c9e4e
+
+eth_chainId
+eth_call
+  Contract call:    <UnrecognizedContract>
+  From:             0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:               0x4e29d2ee6973e5bd093df40ef9d0b28bd56c9e4e
+
+
