@@ -1,1 +1,2748 @@
+Last login: Tue Oct 28 08:53:50 on ttys001
+sepehrsalami@MacBook-Pro ~ % cd gmx-contracts
+sepehrsalami@MacBook-Pro gmx-contracts % npx hardhat console --network localhost
+[dotenv@17.2.1] injecting env (30) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.2.1] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+Welcome to Node.js v22.18.0.
+Type ".help" for more information.
+> let { ethers, network } = require("hardhat");
+undefined
+> 
+> let TM_ADDRESS = "0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E";
+undefined
+> let GMX_TIMELOCK = "0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2";
+undefined
+> let NEW_ADMIN = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+undefined
+> 
+> let tm = await ethers.getContractAt("TokenManager", TM_ADDRESS);
+undefined
+> console.log("✅ TokenManager connected:", tm.address);
+✅ TokenManager connected: 0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E
+undefined
+> 
+> let nonce = await tm.actionsNonce();
+undefined
+> console.log("🔸 Current nonce:", nonce.toString());
+🔸 Current nonce: 15
+undefined
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer1 = await ethers.getSigner("0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5");
+undefined
+> await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught ReferenceError: signer2 is not defined
+    at REPL23:1:50
+> await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught ReferenceError: signer3 is not defined
+    at REPL24:1:50
+> let tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught ReferenceError: signer3 is not defined
+    at REPL25:1:52
+> await tx.wait();
+Uncaught TypeError: Cannot read properties of undefined (reading 'wait')
+    at REPL26:1:42
+> console.log("✅ Admin changed successfully:", tx.hash);
+Uncaught TypeError: Cannot read properties of undefined (reading 'hash')
+> let GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+Uncaught SyntaxError: Identifier 'GMX_TIMELOCK' has already been declared
+> 
+> let NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"); 
+Uncaught SyntaxError: Identifier 'NEW_ADMIN' has already been declared
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x881690382102106b00a99E3dB86056D0fC71eee6"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x881690382102106b00a99E3dB86056D0fC71eee6",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer2 = await ethers.getSigner("0x881690382102106b00a99E3dB86056D0fC71eee6");
+undefined
+> 
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer3 = await ethers.getSigner("0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13");
+undefined
+> await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> 
+> let tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught SyntaxError: Identifier 'tx' has already been declared
+> await tx.wait();
+Uncaught TypeError: Cannot read properties of undefined (reading 'wait')
+    at REPL56:1:42
+> console.log("✅ Admin changed successfully:", tx.hash);
+Uncaught TypeError: Cannot read properties of undefined (reading 'hash')
+> const GMX_TIMELOCK = "0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2";
+Uncaught SyntaxError: Identifier 'GMX_TIMELOCK' has already been declared
+> const NEW_ADMIN = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+Uncaught SyntaxError: Identifier 'NEW_ADMIN' has already been declared
+> const { ethers } = require("hardhat");
+Uncaught SyntaxError: Identifier 'ethers' has already been declared
+> 
+> 
+> 
+> 
+> "0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2"
+'0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+> let GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+Uncaught SyntaxError: Identifier 'GMX_TIMELOCK' has already been declared
+> let NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"); 
+Uncaught SyntaxError: Identifier 'NEW_ADMIN' has already been declared
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x881690382102106b00a99E3dB86056D0fC71eee6"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x881690382102106b00a99E3dB86056D0fC71eee6",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer2 = await ethers.getSigner("0x881690382102106b00a99E3dB86056D0fC71eee6");
+Uncaught SyntaxError: Identifier 'signer2' has already been declared
+> 
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer3 = await ethers.getSigner("0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13");
+Uncaught SyntaxError: Identifier 'signer3' has already been declared
+> await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+Error: bad address checksum (argument="address", value="0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:93:20)
+    at Formatter.address (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/formatter.ts:235:26)
+    at EthersProviderWrapper.<anonymous> (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/src.ts/base-provider.ts:1989:51)
+    at step (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/providers/lib/base-provider.js:48:23) {
+  reason: 'bad address checksum',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '0xb87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+}
+> 
+> let tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught SyntaxError: Identifier 'tx' has already been declared
+> await tx.wait();
+Uncaught TypeError: Cannot read properties of undefined (reading 'wait')
+    at REPL93:1:42
+> console.log("✅ Admin changed successfully:", tx.hash);
+Uncaught TypeError: Cannot read properties of undefined (reading 'hash')
+> 
+> 
+> 
+> 
+> 
+> GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+'0xB87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+> NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266");
+'0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+> let GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+Uncaught SyntaxError: Identifier 'GMX_TIMELOCK' has already been declared
+> let NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"); 
+Uncaught SyntaxError: Identifier 'NEW_ADMIN' has already been declared
+> GMX_TIMELOCK = ethers.utils.getAddress("...");
+Uncaught:
+Error: invalid address (argument="address", value="...", code=INVALID_ARGUMENT, version=address/5.6.0)
+    at Logger.makeError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:261:28)
+    at Logger.throwError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:273:20)
+    at Logger.throwArgumentError (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/logger/src.ts/index.ts:277:21)
+    at Object.getAddress (/Users/sepehrsalami/gmx-contracts/node_modules/@ethersproject/address/src.ts/index.ts:109:16) {
+  reason: 'invalid address',
+  code: 'INVALID_ARGUMENT',
+  argument: 'address',
+  value: '...'
+}
+> await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+{
+  hash: '0xec073765b367f59a273e54889cf0660f9a4329402da5485eae081fa479e1c77a',
+  type: 2,
+  accessList: [],
+  blockHash: '0xb47a81da6b49d34b9f8322e3563bbdeefd981024f79940cc2a3a2bdb8cedc89b',
+  blockNumber: 394171026,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  gasPrice: BigNumber { _hex: '0x3bc8ec1a', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bd52d28', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0x014c33', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 19,
+  data: '0x75fd490c000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+  r: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  s: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+ProviderError: Error: VM Exception while processing transaction: reverted with reason string 'TokenManager: already signed'
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+{
+  hash: '0x916e4eac02a48e2f88091a0f4899456d9bfc3293c45eac5beb36532cd4a0d8b6',
+  type: 2,
+  accessList: [],
+  blockHash: '0x012e014062144b47efc3cb413091b5011a0b5385d36a3f215360445eb0961e10',
+  blockNumber: 394171027,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+  gasPrice: BigNumber { _hex: '0x3bc32fb0', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bcdeab2', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 67,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000000000000000000000000000000000000000000f',
+  r: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  s: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+{
+  hash: '0x0d7ebaa589a17decd0ac8f4fce98dc369d3f3f002db7d070857be01b6e74a43a',
+  type: 2,
+  accessList: [],
+  blockHash: '0x11d3c6c8f0b0281a4dbcfedd318600e8ec2fae7f2c35dfdb335cf3c29e7a3234',
+  blockNumber: 394171028,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+  gasPrice: BigNumber { _hex: '0x3bbe2797', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bc78c73', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 4584,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266000000000000000000000000000000000000000000000000000000000000000f',
+  r: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  s: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> 
+> let tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught SyntaxError: Identifier 'tx' has already been declared
+> await tx.wait();
+Uncaught TypeError: Cannot read properties of undefined (reading 'wait')
+    at REPL111:1:42
+> console.log("✅ Admin changed successfully:", tx.hash);
+Uncaught TypeError: Cannot read properties of undefined (reading 'hash')
+> tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught ProviderError: Error: Transaction reverted without a reason string
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tx.wait();
+Uncaught TypeError: Cannot read properties of undefined (reading 'wait')
+    at REPL114:1:42
+> console.log("✅ Admin changed successfully:", tx.hash);
+Uncaught TypeError: Cannot read properties of undefined (reading 'hash')
+> if (tx) {
+...   await tx.wait();
+...   console.log("✅ Admin changed successfully:", tx.hash);
+... } else {
+...   console.log("❌ Transaction failed or reverted.");
+... }
+❌ Transaction failed or reverted.
+undefined
+> 
+> 
+> 
+> 
+> (await tm.actionsNonce()).toString(); // مطمئن شو هنوز همون nonce هست
+'16'
+> 
+> let actionHash = ethers.utils.solidityKeccak256(
+...   ["string", "address", "address", "uint256"],
+...   ["setAdmin", GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber()]
+... );
+undefined
+> 
+> let pending = await tm.pendingActions(actionHash);
+undefined
+> console.log("🔍 Pending action exists:", pending);
+🔍 Pending action exists: true
+undefined
+> 
+> 
+> await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, 16);
+Uncaught:
+ProviderError: Error: VM Exception while processing transaction: reverted with reason string 'TokenManager: already signed'
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, 16);
+{
+  hash: '0x8fd7a2cb34cb64892222346d2795c0bbf65e4eed29292472bd6828623c0171d3',
+  type: 2,
+  accessList: [],
+  blockHash: '0x59b4fa1085c2c1df7b23bd2baa0e8386fc2b43b4934c781d2fb457d106d0b566',
+  blockNumber: 394171029,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+  gasPrice: BigNumber { _hex: '0x3bb9bfee', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bc1f941', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 68,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000010',
+  r: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  s: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, 16);
+{
+  hash: '0x2a907a53ba93bb4e683ad24da6c421b8a842fdc3e367cf9fc0c753dd862f8412',
+  type: 2,
+  accessList: [],
+  blockHash: '0x1a36fbf313d8621f1cc2d85a1c90049c64c56cf26cd6684593822c996095d973',
+  blockNumber: 394171030,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+  gasPrice: BigNumber { _hex: '0x3bb5e4b9', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bbd17d2', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 4585,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000010',
+  r: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  s: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, 16);
+Uncaught ProviderError: Error: Transaction reverted without a reason string
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tx.wait();
+Uncaught TypeError: Cannot read properties of undefined (reading 'wait')
+    at REPL141:1:42
+> console.log("✅ Admin changed successfully:", tx.hash);
+Uncaught TypeError: Cannot read properties of undefined (reading 'hash')
+> 
+> date
+Uncaught ReferenceError: date is not defined
+> 
+> 
+> 
+> 
+> console.log("🕒 Current time:", new Date().toLocaleString());
+🕒 Current time: 10/28/2025, 9:57:01 AM
+undefined
+> let { ethers, network } = require("hardhat");
+Uncaught SyntaxError: Identifier 'ethers' has already been declared
+> 
+> let TM_ADDRESS = "0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E";
+Uncaught SyntaxError: Identifier 'TM_ADDRESS' has already been declared
+> let tm = await ethers.getContractAt("TokenManager", TM_ADDRESS);
+Uncaught SyntaxError: Identifier 'tm' has already been declared
+> console.log("✅ TokenManager connected:", tm.address);
+✅ TokenManager connected: 0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E
+undefined
+> let GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+Uncaught SyntaxError: Identifier 'GMX_TIMELOCK' has already been declared
+> let NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266");
+Uncaught SyntaxError: Identifier 'NEW_ADMIN' has already been declared
+> let nonce = await tm.actionsNonce();
+Uncaught SyntaxError: Identifier 'nonce' has already been declared
+> console.log("🔸 Current nonce:", nonce.toString());
+🔸 Current nonce: 15
+undefined
+> 
+> let actionHash = ethers.utils.solidityKeccak256(
+...   ["string", "address", "address", "uint256"],
+...   ["setAdmin", GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber()]
+... );
+Uncaught SyntaxError: Identifier 'actionHash' has already been declared
+> let pending = await tm.pendingActions(actionHash);
+Uncaught SyntaxError: Identifier 'pending' has already been declared
+> console.log("🔍 Pending action exists:", pending);
+🔍 Pending action exists: true
+undefined
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer1 = await ethers.getSigner("0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5"); 
+Uncaught SyntaxError: Identifier 'signer1' has already been declared
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x881690382102106b00a99E3dB86056D0fC71eee6"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x881690382102106b00a99E3dB86056D0fC71eee6",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer2 = await ethers.getSigner("0x881690382102106b00a99E3dB86056D0fC71eee6"); 
+Uncaught SyntaxError: Identifier 'signer2' has already been declared
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer3 = await ethers.getSigner("0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"); 
+Uncaught SyntaxError: Identifier 'signer3' has already been declared
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer3 = await ethers.getSigner("0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"); 
+Uncaught SyntaxError: Identifier 'signer3' has already been declared
+> await network.provider.request({
+...   method: "hardhat_impersonateAccount",
+...   params: ["0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"]
+... });
+true
+> await network.provider.send("hardhat_setBalance", [
+...   "0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13",
+...   "0x3635C9ADC5DEA00000"
+... ]);
+true
+> let signer3 = await ethers.getSigner("0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13"); 
+Uncaught SyntaxError: Identifier 'signer3' has already been declared
+> await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+{
+  hash: '0x5e7f9dc9b751eea1fd01ef65735664cbaa35ccb9a6a4e22da74fae40036f64a8',
+  type: 2,
+  accessList: [],
+  blockHash: '0x68dd2bed0efff2235b2022f9f9f91dd351ac9ec14be6b202e2fa38b29af80e3e',
+  blockNumber: 394171031,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  gasPrice: BigNumber { _hex: '0x3bb2847a', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bb8d202', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0x014c33', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 20,
+  data: '0x75fd490c000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+  r: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  s: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+ProviderError: Error: VM Exception while processing transaction: reverted with reason string 'TokenManager: already signed'
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+ProviderError: Error: VM Exception while processing transaction: reverted with reason string 'TokenManager: already signed'
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+ProviderError: Error: VM Exception while processing transaction: reverted with reason string 'TokenManager: already signed'
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber()); 
+Uncaught ProviderError: Error: Transaction reverted without a reason string
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tx.wait();
+Uncaught TypeError: Cannot read properties of undefined (reading 'wait')
+    at REPL216:1:42
+> console.log("✅ Admin changed successfully:", tx.hash);
+Uncaught TypeError: Cannot read properties of undefined (reading 'hash')
+> 
+> 
+> 
+> 
+> console.log("🕒 Current time:", new Date().toLocaleString());
+🕒 Current time: 10/28/2025, 10:01:26 AM
+undefined
+> 
+> let TM_ADDRESS = "0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E";
+Uncaught SyntaxError: Identifier 'TM_ADDRESS' has already been declared
+> let tm = await ethers.getContractAt("TokenManager", TM_ADDRESS);
+Uncaught SyntaxError: Identifier 'tm' has already been declared
+> GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+'0xB87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+> NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266");
+'0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+> nonce = await tm.actionsNonce();
+BigNumber { _hex: '0x11', _isBigNumber: true }
+> actionHash = ethers.utils.solidityKeccak256(
+...   ["string", "address", "address", "uint256"],
+...   ["setAdmin", GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber()]
+... );
+'0x8c9392079e212dabd64b83e6cf78128de2776bbac836c009688235696a817440'
+> pending = await tm.pendingActions(actionHash);
+true
+> console.log("🔍 Pending action exists:", pending);
+🔍 Pending action exists: true
+undefined
+> signer1 = await ethers.getSigner("0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: 394171030,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 1761632879999,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object],
+      _internalBlockNumber: [Promise],
+      _fastBlockNumber: 394171030,
+      _fastBlockNumberPromise: [Promise]
+    },
+    _address: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 36,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: 394171030,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 1761632879999,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    },
+    _internalBlockNumber: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 13421,
+      [Symbol(trigger_async_id_symbol)]: 13414
+    },
+    _fastBlockNumber: 394171030,
+    _fastBlockNumberPromise: Promise {
+      394171030,
+      [Symbol(async_id_symbol)]: 12439,
+      [Symbol(trigger_async_id_symbol)]: 12338
+    }
+  }
+}
+> signer2 = await ethers.getSigner("0x881690382102106b00a99E3dB86056D0fC71eee6");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: 394171030,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 1761632879999,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object],
+      _internalBlockNumber: [Promise],
+      _fastBlockNumber: 394171030,
+      _fastBlockNumberPromise: [Promise]
+    },
+    _address: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 36,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: 394171030,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 1761632879999,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    },
+    _internalBlockNumber: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 13421,
+      [Symbol(trigger_async_id_symbol)]: 13414
+    },
+    _fastBlockNumber: 394171030,
+    _fastBlockNumberPromise: Promise {
+      394171030,
+      [Symbol(async_id_symbol)]: 12439,
+      [Symbol(trigger_async_id_symbol)]: 12338
+    }
+  }
+}
+> signer3 = await ethers.getSigner("0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: 394171030,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 1761632879999,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object],
+      _internalBlockNumber: [Promise],
+      _fastBlockNumber: 394171030,
+      _fastBlockNumberPromise: [Promise]
+    },
+    _address: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 36,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: 394171030,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 1761632879999,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    },
+    _internalBlockNumber: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 13421,
+      [Symbol(trigger_async_id_symbol)]: 13414
+    },
+    _fastBlockNumber: 394171030,
+    _fastBlockNumberPromise: Promise {
+      394171030,
+      [Symbol(async_id_symbol)]: 12439,
+      [Symbol(trigger_async_id_symbol)]: 12338
+    }
+  }
+}
+> await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+{
+  hash: '0x751f698409acd050f03b87fa9fea085ad0fd11de081f92d25351c750b51d8041',
+  type: 2,
+  accessList: [],
+  blockHash: '0x4bfe21e27b24a63b8a9d3643011836ca961662abcb3938686473cd1b9991d824',
+  blockNumber: 394171032,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  gasPrice: BigNumber { _hex: '0x3baf9135', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bb5161f', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0x014c33', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 21,
+  data: '0x75fd490c000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+  r: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  s: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+Uncaught:
+ProviderError: Error: VM Exception while processing transaction: reverted with reason string 'TokenManager: already signed'
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+{
+  hash: '0xeb38fe9e9df92d35e837fce63cbe208b454f4b240ba38d44a065b98b9fcc8b6f',
+  type: 2,
+  accessList: [],
+  blockHash: '0xf1d466a7be3714098ab904834206227a01444e5b88c0fdf19a6bf32dfb288d25',
+  blockNumber: 394171033,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+  gasPrice: BigNumber { _hex: '0x3bacfbd8', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bb1d115', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 69,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000011',
+  r: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  s: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+{
+  hash: '0xbed512c37ff99a8b5939a33d0b5bd39d32a9ca8e4d34a6fb8fbcf105ecf855e1',
+  type: 2,
+  accessList: [],
+  blockHash: '0xab42a14f2a5ebf182e4ea578c424c30cd9a91cb73174be6f21b2cbbdcfcdf87c',
+  blockNumber: 394171034,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+  gasPrice: BigNumber { _hex: '0x3baab7b1', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3baef2d4', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 4586,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000011',
+  r: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  s: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> tx = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber()); 
+Uncaught ProviderError: Error: Transaction reverted without a reason string
+    at HttpProvider.request (/Users/sepehrsalami/gmx-contracts/node_modules/hardhat/src/internal/core/providers/http.ts:116:21)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EthersProviderWrapper.send (/Users/sepehrsalami/gmx-contracts/node_modules/@nomiclabs/hardhat-ethers/src/internal/ethers-provider-wrapper.ts:13:20)
+> const fs = require("fs");
+undefined
+> const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Tehran" }); 
+undefined
+> console.log("\n🔷 GMX PoC — TokenManager setAdmin Flow");
+
+🔷 GMX PoC — TokenManager setAdmin Flow
+undefined
+> console.log(`📅 Timestamp: ${now}\n`);
+📅 Timestamp: 10/28/2025, 12:02:02 PM
+
+undefined
+> 
+> function logTx(label, tx) {
+...   const line = `${label}: ${tx.hash}\n`;
+...   fs.appendFileSync("tx_hashes_42161.log", line);
+...   console.log("📦 Saved:", line.trim());
+... }
+undefined
+> TM_ADDRESS = "0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E";
+'0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E'
+> tm = await ethers.getContractAt("TokenManager", TM_ADDRESS);
+Contract {
+  interface: Interface {
+    fragments: [
+      [ConstructorFragment], [EventFragment],
+      [EventFragment],       [EventFragment],
+      [EventFragment],       [EventFragment],
+      [EventFragment],       [EventFragment],
+      [EventFragment],       [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment]
+    ],
+    _abiCoder: AbiCoder { coerceFunc: null },
+    functions: {
+      'actionsNonce()': [FunctionFragment],
+      'admin()': [FunctionFragment],
+      'approve(address,address,uint256,uint256)': [FunctionFragment],
+      'approveNFT(address,address,uint256,uint256)': [FunctionFragment],
+      'approveNFTs(address,address,uint256[],uint256)': [FunctionFragment],
+      'initialize(address[])': [FunctionFragment],
+      'isInitialized()': [FunctionFragment],
+      'isSigner(address)': [FunctionFragment],
+      'minAuthorizations()': [FunctionFragment],
+      'pendingActions(bytes32)': [FunctionFragment],
+      'receiveNFTs(address,address,uint256[])': [FunctionFragment],
+      'setAdmin(address,address,uint256)': [FunctionFragment],
+      'setGov(address,address,address,uint256)': [FunctionFragment],
+      'signApprove(address,address,uint256,uint256)': [FunctionFragment],
+      'signApproveNFT(address,address,uint256,uint256)': [FunctionFragment],
+      'signApproveNFTs(address,address,uint256[],uint256)': [FunctionFragment],
+      'signSetAdmin(address,address,uint256)': [FunctionFragment],
+      'signSetGov(address,address,address,uint256)': [FunctionFragment],
+      'signalApprove(address,address,uint256)': [FunctionFragment],
+      'signalApproveNFT(address,address,uint256)': [FunctionFragment],
+      'signalApproveNFTs(address,address,uint256[])': [FunctionFragment],
+      'signalSetAdmin(address,address)': [FunctionFragment],
+      'signalSetGov(address,address,address)': [FunctionFragment],
+      'signedActions(address,bytes32)': [FunctionFragment],
+      'signers(uint256)': [FunctionFragment],
+      'signersLength()': [FunctionFragment]
+    },
+    errors: {},
+    events: {
+      'ClearAction(bytes32,uint256)': [EventFragment],
+      'SignAction(bytes32,uint256)': [EventFragment],
+      'SignalApprove(address,address,uint256,bytes32,uint256)': [EventFragment],
+      'SignalApproveNFT(address,address,uint256,bytes32,uint256)': [EventFragment],
+      'SignalApproveNFTs(address,address,uint256[],bytes32,uint256)': [EventFragment],
+      'SignalPendingAction(bytes32,uint256)': [EventFragment],
+      'SignalSetAdmin(address,address,bytes32,uint256)': [EventFragment],
+      'SignalSetGov(address,address,address,bytes32,uint256)': [EventFragment]
+    },
+    structs: {},
+    deploy: ConstructorFragment {
+      name: null,
+      type: 'constructor',
+      inputs: [Array],
+      payable: false,
+      stateMutability: 'nonpayable',
+      gas: null,
+      _isFragment: true
+    },
+    _isInterface: true
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 36,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: 394171031,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 1761633120836,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    },
+    _internalBlockNumber: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 15515,
+      [Symbol(trigger_async_id_symbol)]: 15508
+    },
+    _fastBlockNumber: 394171031,
+    _fastBlockNumberPromise: Promise {
+      394171031,
+      [Symbol(async_id_symbol)]: 15616,
+      [Symbol(trigger_async_id_symbol)]: 15515
+    }
+  },
+  signer: SignerWithAddress {
+    _isSigner: true,
+    address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+    _signer: JsonRpcSigner {
+      _isSigner: true,
+      provider: [EthersProviderWrapper],
+      _address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+      _index: null
+    },
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: 394171031,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 1761633120836,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object],
+      _internalBlockNumber: [Promise],
+      _fastBlockNumber: 394171031,
+      _fastBlockNumberPromise: [Promise]
+    }
+  },
+  callStatic: {
+    'actionsNonce()': [Function (anonymous)],
+    'admin()': [Function (anonymous)],
+    'approve(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'initialize(address[])': [Function (anonymous)],
+    'isInitialized()': [Function (anonymous)],
+    'isSigner(address)': [Function (anonymous)],
+    'minAuthorizations()': [Function (anonymous)],
+    'pendingActions(bytes32)': [Function (anonymous)],
+    'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'setAdmin(address,address,uint256)': [Function (anonymous)],
+    'setGov(address,address,address,uint256)': [Function (anonymous)],
+    'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+    'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+    'signalApprove(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'signalSetAdmin(address,address)': [Function (anonymous)],
+    'signalSetGov(address,address,address)': [Function (anonymous)],
+    'signedActions(address,bytes32)': [Function (anonymous)],
+    'signers(uint256)': [Function (anonymous)],
+    'signersLength()': [Function (anonymous)],
+    actionsNonce: [Function (anonymous)],
+    admin: [Function (anonymous)],
+    approve: [Function (anonymous)],
+    approveNFT: [Function (anonymous)],
+    approveNFTs: [Function (anonymous)],
+    initialize: [Function (anonymous)],
+    isInitialized: [Function (anonymous)],
+    isSigner: [Function (anonymous)],
+    minAuthorizations: [Function (anonymous)],
+    pendingActions: [Function (anonymous)],
+    receiveNFTs: [Function (anonymous)],
+    setAdmin: [Function (anonymous)],
+    setGov: [Function (anonymous)],
+    signApprove: [Function (anonymous)],
+    signApproveNFT: [Function (anonymous)],
+    signApproveNFTs: [Function (anonymous)],
+    signSetAdmin: [Function (anonymous)],
+    signSetGov: [Function (anonymous)],
+    signalApprove: [Function (anonymous)],
+    signalApproveNFT: [Function (anonymous)],
+    signalApproveNFTs: [Function (anonymous)],
+    signalSetAdmin: [Function (anonymous)],
+    signalSetGov: [Function (anonymous)],
+    signedActions: [Function (anonymous)],
+    signers: [Function (anonymous)],
+    signersLength: [Function (anonymous)]
+  },
+  estimateGas: {
+    'actionsNonce()': [Function (anonymous)],
+    'admin()': [Function (anonymous)],
+    'approve(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'initialize(address[])': [Function (anonymous)],
+    'isInitialized()': [Function (anonymous)],
+    'isSigner(address)': [Function (anonymous)],
+    'minAuthorizations()': [Function (anonymous)],
+    'pendingActions(bytes32)': [Function (anonymous)],
+    'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'setAdmin(address,address,uint256)': [Function (anonymous)],
+    'setGov(address,address,address,uint256)': [Function (anonymous)],
+    'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+    'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+    'signalApprove(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'signalSetAdmin(address,address)': [Function (anonymous)],
+    'signalSetGov(address,address,address)': [Function (anonymous)],
+    'signedActions(address,bytes32)': [Function (anonymous)],
+    'signers(uint256)': [Function (anonymous)],
+    'signersLength()': [Function (anonymous)],
+    actionsNonce: [Function (anonymous)],
+    admin: [Function (anonymous)],
+    approve: [Function (anonymous)],
+    approveNFT: [Function (anonymous)],
+    approveNFTs: [Function (anonymous)],
+    initialize: [Function (anonymous)],
+    isInitialized: [Function (anonymous)],
+    isSigner: [Function (anonymous)],
+    minAuthorizations: [Function (anonymous)],
+    pendingActions: [Function (anonymous)],
+    receiveNFTs: [Function (anonymous)],
+    setAdmin: [Function (anonymous)],
+    setGov: [Function (anonymous)],
+    signApprove: [Function (anonymous)],
+    signApproveNFT: [Function (anonymous)],
+    signApproveNFTs: [Function (anonymous)],
+    signSetAdmin: [Function (anonymous)],
+    signSetGov: [Function (anonymous)],
+    signalApprove: [Function (anonymous)],
+    signalApproveNFT: [Function (anonymous)],
+    signalApproveNFTs: [Function (anonymous)],
+    signalSetAdmin: [Function (anonymous)],
+    signalSetGov: [Function (anonymous)],
+    signedActions: [Function (anonymous)],
+    signers: [Function (anonymous)],
+    signersLength: [Function (anonymous)]
+  },
+  functions: {
+    'actionsNonce()': [Function (anonymous)],
+    'admin()': [Function (anonymous)],
+    'approve(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'initialize(address[])': [Function (anonymous)],
+    'isInitialized()': [Function (anonymous)],
+    'isSigner(address)': [Function (anonymous)],
+    'minAuthorizations()': [Function (anonymous)],
+    'pendingActions(bytes32)': [Function (anonymous)],
+    'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'setAdmin(address,address,uint256)': [Function (anonymous)],
+    'setGov(address,address,address,uint256)': [Function (anonymous)],
+    'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+    'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+    'signalApprove(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'signalSetAdmin(address,address)': [Function (anonymous)],
+    'signalSetGov(address,address,address)': [Function (anonymous)],
+    'signedActions(address,bytes32)': [Function (anonymous)],
+    'signers(uint256)': [Function (anonymous)],
+    'signersLength()': [Function (anonymous)],
+    actionsNonce: [Function (anonymous)],
+    admin: [Function (anonymous)],
+    approve: [Function (anonymous)],
+    approveNFT: [Function (anonymous)],
+    approveNFTs: [Function (anonymous)],
+    initialize: [Function (anonymous)],
+    isInitialized: [Function (anonymous)],
+    isSigner: [Function (anonymous)],
+    minAuthorizations: [Function (anonymous)],
+    pendingActions: [Function (anonymous)],
+    receiveNFTs: [Function (anonymous)],
+    setAdmin: [Function (anonymous)],
+    setGov: [Function (anonymous)],
+    signApprove: [Function (anonymous)],
+    signApproveNFT: [Function (anonymous)],
+    signApproveNFTs: [Function (anonymous)],
+    signSetAdmin: [Function (anonymous)],
+    signSetGov: [Function (anonymous)],
+    signalApprove: [Function (anonymous)],
+    signalApproveNFT: [Function (anonymous)],
+    signalApproveNFTs: [Function (anonymous)],
+    signalSetAdmin: [Function (anonymous)],
+    signalSetGov: [Function (anonymous)],
+    signedActions: [Function (anonymous)],
+    signers: [Function (anonymous)],
+    signersLength: [Function (anonymous)]
+  },
+  populateTransaction: {
+    'actionsNonce()': [Function (anonymous)],
+    'admin()': [Function (anonymous)],
+    'approve(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'initialize(address[])': [Function (anonymous)],
+    'isInitialized()': [Function (anonymous)],
+    'isSigner(address)': [Function (anonymous)],
+    'minAuthorizations()': [Function (anonymous)],
+    'pendingActions(bytes32)': [Function (anonymous)],
+    'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'setAdmin(address,address,uint256)': [Function (anonymous)],
+    'setGov(address,address,address,uint256)': [Function (anonymous)],
+    'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+    'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+    'signalApprove(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'signalSetAdmin(address,address)': [Function (anonymous)],
+    'signalSetGov(address,address,address)': [Function (anonymous)],
+    'signedActions(address,bytes32)': [Function (anonymous)],
+    'signers(uint256)': [Function (anonymous)],
+    'signersLength()': [Function (anonymous)],
+    actionsNonce: [Function (anonymous)],
+    admin: [Function (anonymous)],
+    approve: [Function (anonymous)],
+    approveNFT: [Function (anonymous)],
+    approveNFTs: [Function (anonymous)],
+    initialize: [Function (anonymous)],
+    isInitialized: [Function (anonymous)],
+    isSigner: [Function (anonymous)],
+    minAuthorizations: [Function (anonymous)],
+    pendingActions: [Function (anonymous)],
+    receiveNFTs: [Function (anonymous)],
+    setAdmin: [Function (anonymous)],
+    setGov: [Function (anonymous)],
+    signApprove: [Function (anonymous)],
+    signApproveNFT: [Function (anonymous)],
+    signApproveNFTs: [Function (anonymous)],
+    signSetAdmin: [Function (anonymous)],
+    signSetGov: [Function (anonymous)],
+    signalApprove: [Function (anonymous)],
+    signalApproveNFT: [Function (anonymous)],
+    signalApproveNFTs: [Function (anonymous)],
+    signalSetAdmin: [Function (anonymous)],
+    signalSetGov: [Function (anonymous)],
+    signedActions: [Function (anonymous)],
+    signers: [Function (anonymous)],
+    signersLength: [Function (anonymous)]
+  },
+  filters: {
+    'ClearAction(bytes32,uint256)': [Function (anonymous)],
+    'SignAction(bytes32,uint256)': [Function (anonymous)],
+    'SignalApprove(address,address,uint256,bytes32,uint256)': [Function (anonymous)],
+    'SignalApproveNFT(address,address,uint256,bytes32,uint256)': [Function (anonymous)],
+    'SignalApproveNFTs(address,address,uint256[],bytes32,uint256)': [Function (anonymous)],
+    'SignalPendingAction(bytes32,uint256)': [Function (anonymous)],
+    'SignalSetAdmin(address,address,bytes32,uint256)': [Function (anonymous)],
+    'SignalSetGov(address,address,address,bytes32,uint256)': [Function (anonymous)],
+    ClearAction: [Function (anonymous)],
+    SignAction: [Function (anonymous)],
+    SignalApprove: [Function (anonymous)],
+    SignalApproveNFT: [Function (anonymous)],
+    SignalApproveNFTs: [Function (anonymous)],
+    SignalPendingAction: [Function (anonymous)],
+    SignalSetAdmin: [Function (anonymous)],
+    SignalSetGov: [Function (anonymous)]
+  },
+  _runningEvents: {},
+  _wrappedEmits: {},
+  address: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  resolvedAddress: Promise {
+    '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+    [Symbol(async_id_symbol)]: 17610,
+    [Symbol(trigger_async_id_symbol)]: 17386
+  },
+  'actionsNonce()': [Function (anonymous)],
+  'admin()': [Function (anonymous)],
+  'approve(address,address,uint256,uint256)': [Function (anonymous)],
+  'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+  'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+  'initialize(address[])': [Function (anonymous)],
+  'isInitialized()': [Function (anonymous)],
+  'isSigner(address)': [Function (anonymous)],
+  'minAuthorizations()': [Function (anonymous)],
+  'pendingActions(bytes32)': [Function (anonymous)],
+  'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+  'setAdmin(address,address,uint256)': [Function (anonymous)],
+  'setGov(address,address,address,uint256)': [Function (anonymous)],
+  'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+  'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+  'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+  'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+  'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+  'signalApprove(address,address,uint256)': [Function (anonymous)],
+  'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+  'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+  'signalSetAdmin(address,address)': [Function (anonymous)],
+  'signalSetGov(address,address,address)': [Function (anonymous)],
+  'signedActions(address,bytes32)': [Function (anonymous)],
+  'signers(uint256)': [Function (anonymous)],
+  'signersLength()': [Function (anonymous)],
+  actionsNonce: [Function (anonymous)],
+  admin: [Function (anonymous)],
+  approve: [Function (anonymous)],
+  approveNFT: [Function (anonymous)],
+  approveNFTs: [Function (anonymous)],
+  initialize: [Function (anonymous)],
+  isInitialized: [Function (anonymous)],
+  isSigner: [Function (anonymous)],
+  minAuthorizations: [Function (anonymous)],
+  pendingActions: [Function (anonymous)],
+  receiveNFTs: [Function (anonymous)],
+  setAdmin: [Function (anonymous)],
+  setGov: [Function (anonymous)],
+  signApprove: [Function (anonymous)],
+  signApproveNFT: [Function (anonymous)],
+  signApproveNFTs: [Function (anonymous)],
+  signSetAdmin: [Function (anonymous)],
+  signSetGov: [Function (anonymous)],
+  signalApprove: [Function (anonymous)],
+  signalApproveNFT: [Function (anonymous)],
+  signalApproveNFTs: [Function (anonymous)],
+  signalSetAdmin: [Function (anonymous)],
+  signalSetGov: [Function (anonymous)],
+  signedActions: [Function (anonymous)],
+  signers: [Function (anonymous)],
+  signersLength: [Function (anonymous)]
+}
+> 
+> GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+'0xB87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+> NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266");
+'0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+> nonce = await tm.actionsNonce();
+BigNumber { _hex: '0x12', _isBigNumber: true }
+> actionHash = ethers.utils.solidityKeccak256(
+...   ["string", "address", "address", "uint256"],
+...   ["setAdmin", GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber()]
+... );
+'0x16bf1e9498adcda5f52886c2c71a428fe8fc47fa7c506257e56805871e16bde8'
+> pending = await tm.pendingActions(actionHash);
+true
+> console.log("🔍 Pending action exists:", pending);
+🔍 Pending action exists: true
+undefined
+> signer1 = await ethers.getSigner("0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: 394171031,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 1761633120836,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object],
+      _internalBlockNumber: [Promise],
+      _fastBlockNumber: 394171031,
+      _fastBlockNumberPromise: [Promise]
+    },
+    _address: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 36,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: 394171031,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 1761633120836,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    },
+    _internalBlockNumber: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 15515,
+      [Symbol(trigger_async_id_symbol)]: 15508
+    },
+    _fastBlockNumber: 394171031,
+    _fastBlockNumberPromise: Promise {
+      394171031,
+      [Symbol(async_id_symbol)]: 15616,
+      [Symbol(trigger_async_id_symbol)]: 15515
+    }
+  }
+}
+> signer2 = await ethers.getSigner("0x881690382102106b00a99E3dB86056D0fC71eee6");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: 394171031,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 1761633120836,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object],
+      _internalBlockNumber: [Promise],
+      _fastBlockNumber: 394171031,
+      _fastBlockNumberPromise: [Promise]
+    },
+    _address: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 36,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: 394171031,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 1761633120836,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    },
+    _internalBlockNumber: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 15515,
+      [Symbol(trigger_async_id_symbol)]: 15508
+    },
+    _fastBlockNumber: 394171031,
+    _fastBlockNumberPromise: Promise {
+      394171031,
+      [Symbol(async_id_symbol)]: 15616,
+      [Symbol(trigger_async_id_symbol)]: 15515
+    }
+  }
+}
+> signer3 = await ethers.getSigner("0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: 394171031,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 1761633120836,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object],
+      _internalBlockNumber: [Promise],
+      _fastBlockNumber: 394171031,
+      _fastBlockNumberPromise: [Promise]
+    },
+    _address: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 36,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: 394171031,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 1761633120836,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    },
+    _internalBlockNumber: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 15515,
+      [Symbol(trigger_async_id_symbol)]: 15508
+    },
+    _fastBlockNumber: 394171031,
+    _fastBlockNumberPromise: Promise {
+      394171031,
+      [Symbol(async_id_symbol)]: 15616,
+      [Symbol(trigger_async_id_symbol)]: 15515
+    }
+  }
+}
+> tx1 = await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+{
+  hash: '0x4b673d79951c09835398f5fe3f12c512c37648fc9ed37b52a03fe533dfae4310',
+  type: 2,
+  accessList: [],
+  blockHash: '0x93839022957f9705d97dd1927648cdcb857555ce35c613e8d775f8ce72bec563',
+  blockNumber: 394171035,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  gasPrice: BigNumber { _hex: '0x3ba8bbcd', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3bac7007', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0x014c33', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 22,
+  data: '0x75fd490c000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+  r: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  s: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> logTx("signalSetAdmin by signer1", tx1);
+📦 Saved: signalSetAdmin by signer1: 0x4b673d79951c09835398f5fe3f12c512c37648fc9ed37b52a03fe533dfae4310
+undefined
+> 
+> try {
+...   tx2 = await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+  tx2 = await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+        ^^^^^
+
+Uncaught:
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+>   logTx("signSetAdmin by signer1", tx2);
+Uncaught ReferenceError: tx2 is not defined
+> } catch (e) {
+} catch (e) {
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+>   console.log("⚠️ signer1 already signed");
+⚠️ signer1 already signed
+undefined
+> }
+}
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+> 
+> tx3 = await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+{
+  hash: '0x07d550744b73ce87eeb79bbdd04685a423d3a1bc246d047ecfc23b35c4d399d8',
+  type: 2,
+  accessList: [],
+  blockHash: '0x6eb4d5178324134b5c44cd1ba20806db49f908310b300fdf12a9acf39e6edc3d',
+  blockNumber: 394171036,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+  gasPrice: BigNumber { _hex: '0x3ba6fff3', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3baa3e47', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 70,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000012',
+  r: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  s: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> logTx("signSetAdmin by signer2", tx3);
+📦 Saved: signSetAdmin by signer2: 0x07d550744b73ce87eeb79bbdd04685a423d3a1bc246d047ecfc23b35c4d399d8
+undefined
+> 
+> tx4 = await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+{
+  hash: '0x090c0b6115db6b322e9dbb19f2e05a923d15932145fa3e0da0f31aba0eb58768',
+  type: 2,
+  accessList: [],
+  blockHash: '0x354b96e1f86fb00654a84722919728d062df6cc288c0ce4f78d93765e79f2397',
+  blockNumber: 394171037,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+  gasPrice: BigNumber { _hex: '0x3ba57a9a', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3ba85182', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 4587,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000012',
+  r: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  s: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> logTx("signSetAdmin by signer3", tx4);
+📦 Saved: signSetAdmin by signer3: 0x090c0b6115db6b322e9dbb19f2e05a923d15932145fa3e0da0f31aba0eb58768
+undefined
+> try {
+...   tx5 = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+  tx5 = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+        ^^^^^
+
+Uncaught:
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+>   logTx("setAdmin by signer3", tx5);
+Uncaught ReferenceError: tx5 is not defined
+> } catch (e) {
+} catch (e) {
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+>   console.log("❌ setAdmin reverted without reason");
+❌ setAdmin reverted without reason
+undefined
+> }
+}
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+> try {
+...   tx5 = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+  tx5 = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+        ^^^^^
+
+Uncaught:
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+>   logTx("setAdmin by signer3", tx5);
+Uncaught ReferenceError: tx5 is not defined
+> } catch (e) {
+} catch (e) {
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+>   console.log("❌ setAdmin reverted without reason");
+❌ setAdmin reverted without reason
+undefined
+> }
+}
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+> 
+(To exit, press Ctrl+C again or Ctrl+D or type .exit)
+> 
+sepehrsalami@MacBook-Pro gmx-contracts % date
+Tue Oct 28 12:03:11 +0330 2025
+sepehrsalami@MacBook-Pro gmx-contracts %                                     
+sepehrsalami@MacBook-Pro gmx-contracts % 
+sepehrsalami@MacBook-Pro gmx-contracts % ls
+,env.save
+GMX_PoC_Report
+GMX_TokenManager_Revert_Report.md
+LICENSE
+README.md
+TokenManager_SetAdmin_SignalAndSign_42161.log
+TokenManager_SetAdmin_SignalAndSign_42161.txt
+action_check.txt
+artifacts
+artifacts-v2
+audits
+auto_check_install.sh
+brownie-config.yaml
+build
+cache
+check_tokenmanager.js
+check_tokenmanager.txt
+check_tokenmangager2.txt
+contracts
+csrf-test.html
+data
+env.example.json
+env.json
+full_analysis.sh
+full_contracts_analysis_report.txt
+full_env_report.sh
+full_project_environment_report.txt
+fund_signers.txt
+generate_gmx_report.sh
+gmx.json
+gmxtool.sh.save
+gmxtools.sh
+hardhat.config.js
+hardhat_dev_node.log
+hardhat_node.log
+hardhat_node.logﬁ
+hardhat_node_2025-10-10.log
+interfaces
+logs_output.txt
+metrics.js
+mythx_analysis_report.txt
+nano
+node_modules
+package-lock.json
+package.json
+poc_film_2025-10-10.txt
+poc_full_output.txt
+poc_output
+poc_output.txt
+poc_output_exec.txt
+poc_run_complete.txt
+poc_summary.json
+poc_tokenmanager_setadminh.js
+probe_actions.txt
+probe_actions2.txt
+project_environment_report.txt
+repl_auto_output.txt
+report_env.sh
+report_env_color.sh
+reports
+run_mythx.sh
+scripts
+setup_project.sh
+test
+tests
+tm_check.txt
+tm_check_full.txt
+tm_probe.txt
+tokenmanager_full_snippet.txt
+tx.txt
+tx_hashes_42161.log
+tx_trace.json
+venv
+sepehrsalami@MacBook-Pro gmx-contracts % date
+Tue Oct 28 12:05:31 +0330 2025
+sepehrsalami@MacBook-Pro gmx-contracts % npx hardhat console --network localhost
+[dotenv@17.2.1] injecting env (30) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.2.1] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+Welcome to Node.js v22.18.0.
+Type ".help" for more information.
+> const fs = require("fs");
+undefined
+> const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Tehran" }); 
+undefined
+> console.log("\n🔷 GMX PoC — TokenManager setAdmin Flow");
+
+🔷 GMX PoC — TokenManager setAdmin Flow
+undefined
+> console.log(`📅 Timestamp: ${now}\n`);
+📅 Timestamp: 10/28/2025, 12:05:40 PM
+
+undefined
+> 
+> function logTx(label, tx) {
+...   const line = `${label}: ${tx.hash}\n`;
+...   fs.appendFileSync("tx_hashes_42161.log", line);
+...   console.log("📦 Saved:", line.trim());
+... }
+undefined
+> TM_ADDRESS = "0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E";
+'0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E'
+> tm = await ethers.getContractAt("TokenManager", TM_ADDRESS);
+Contract {
+  interface: Interface {
+    fragments: [
+      [ConstructorFragment], [EventFragment],
+      [EventFragment],       [EventFragment],
+      [EventFragment],       [EventFragment],
+      [EventFragment],       [EventFragment],
+      [EventFragment],       [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment],    [FunctionFragment],
+      [FunctionFragment]
+    ],
+    _abiCoder: AbiCoder { coerceFunc: null },
+    functions: {
+      'actionsNonce()': [FunctionFragment],
+      'admin()': [FunctionFragment],
+      'approve(address,address,uint256,uint256)': [FunctionFragment],
+      'approveNFT(address,address,uint256,uint256)': [FunctionFragment],
+      'approveNFTs(address,address,uint256[],uint256)': [FunctionFragment],
+      'initialize(address[])': [FunctionFragment],
+      'isInitialized()': [FunctionFragment],
+      'isSigner(address)': [FunctionFragment],
+      'minAuthorizations()': [FunctionFragment],
+      'pendingActions(bytes32)': [FunctionFragment],
+      'receiveNFTs(address,address,uint256[])': [FunctionFragment],
+      'setAdmin(address,address,uint256)': [FunctionFragment],
+      'setGov(address,address,address,uint256)': [FunctionFragment],
+      'signApprove(address,address,uint256,uint256)': [FunctionFragment],
+      'signApproveNFT(address,address,uint256,uint256)': [FunctionFragment],
+      'signApproveNFTs(address,address,uint256[],uint256)': [FunctionFragment],
+      'signSetAdmin(address,address,uint256)': [FunctionFragment],
+      'signSetGov(address,address,address,uint256)': [FunctionFragment],
+      'signalApprove(address,address,uint256)': [FunctionFragment],
+      'signalApproveNFT(address,address,uint256)': [FunctionFragment],
+      'signalApproveNFTs(address,address,uint256[])': [FunctionFragment],
+      'signalSetAdmin(address,address)': [FunctionFragment],
+      'signalSetGov(address,address,address)': [FunctionFragment],
+      'signedActions(address,bytes32)': [FunctionFragment],
+      'signers(uint256)': [FunctionFragment],
+      'signersLength()': [FunctionFragment]
+    },
+    errors: {},
+    events: {
+      'ClearAction(bytes32,uint256)': [EventFragment],
+      'SignAction(bytes32,uint256)': [EventFragment],
+      'SignalApprove(address,address,uint256,bytes32,uint256)': [EventFragment],
+      'SignalApproveNFT(address,address,uint256,bytes32,uint256)': [EventFragment],
+      'SignalApproveNFTs(address,address,uint256[],bytes32,uint256)': [EventFragment],
+      'SignalPendingAction(bytes32,uint256)': [EventFragment],
+      'SignalSetAdmin(address,address,bytes32,uint256)': [EventFragment],
+      'SignalSetGov(address,address,address,bytes32,uint256)': [EventFragment]
+    },
+    structs: {},
+    deploy: ConstructorFragment {
+      name: null,
+      type: 'constructor',
+      inputs: [Array],
+      payable: false,
+      stateMutability: 'nonpayable',
+      gas: null,
+      _isFragment: true
+    },
+    _isInterface: true
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 44,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: -1024,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 0,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    }
+  },
+  signer: SignerWithAddress {
+    _isSigner: true,
+    address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+    _signer: JsonRpcSigner {
+      _isSigner: true,
+      provider: [EthersProviderWrapper],
+      _address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+      _index: null
+    },
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: -1024,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 0,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object]
+    }
+  },
+  callStatic: {
+    'actionsNonce()': [Function (anonymous)],
+    'admin()': [Function (anonymous)],
+    'approve(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'initialize(address[])': [Function (anonymous)],
+    'isInitialized()': [Function (anonymous)],
+    'isSigner(address)': [Function (anonymous)],
+    'minAuthorizations()': [Function (anonymous)],
+    'pendingActions(bytes32)': [Function (anonymous)],
+    'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'setAdmin(address,address,uint256)': [Function (anonymous)],
+    'setGov(address,address,address,uint256)': [Function (anonymous)],
+    'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+    'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+    'signalApprove(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'signalSetAdmin(address,address)': [Function (anonymous)],
+    'signalSetGov(address,address,address)': [Function (anonymous)],
+    'signedActions(address,bytes32)': [Function (anonymous)],
+    'signers(uint256)': [Function (anonymous)],
+    'signersLength()': [Function (anonymous)],
+    actionsNonce: [Function (anonymous)],
+    admin: [Function (anonymous)],
+    approve: [Function (anonymous)],
+    approveNFT: [Function (anonymous)],
+    approveNFTs: [Function (anonymous)],
+    initialize: [Function (anonymous)],
+    isInitialized: [Function (anonymous)],
+    isSigner: [Function (anonymous)],
+    minAuthorizations: [Function (anonymous)],
+    pendingActions: [Function (anonymous)],
+    receiveNFTs: [Function (anonymous)],
+    setAdmin: [Function (anonymous)],
+    setGov: [Function (anonymous)],
+    signApprove: [Function (anonymous)],
+    signApproveNFT: [Function (anonymous)],
+    signApproveNFTs: [Function (anonymous)],
+    signSetAdmin: [Function (anonymous)],
+    signSetGov: [Function (anonymous)],
+    signalApprove: [Function (anonymous)],
+    signalApproveNFT: [Function (anonymous)],
+    signalApproveNFTs: [Function (anonymous)],
+    signalSetAdmin: [Function (anonymous)],
+    signalSetGov: [Function (anonymous)],
+    signedActions: [Function (anonymous)],
+    signers: [Function (anonymous)],
+    signersLength: [Function (anonymous)]
+  },
+  estimateGas: {
+    'actionsNonce()': [Function (anonymous)],
+    'admin()': [Function (anonymous)],
+    'approve(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'initialize(address[])': [Function (anonymous)],
+    'isInitialized()': [Function (anonymous)],
+    'isSigner(address)': [Function (anonymous)],
+    'minAuthorizations()': [Function (anonymous)],
+    'pendingActions(bytes32)': [Function (anonymous)],
+    'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'setAdmin(address,address,uint256)': [Function (anonymous)],
+    'setGov(address,address,address,uint256)': [Function (anonymous)],
+    'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+    'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+    'signalApprove(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'signalSetAdmin(address,address)': [Function (anonymous)],
+    'signalSetGov(address,address,address)': [Function (anonymous)],
+    'signedActions(address,bytes32)': [Function (anonymous)],
+    'signers(uint256)': [Function (anonymous)],
+    'signersLength()': [Function (anonymous)],
+    actionsNonce: [Function (anonymous)],
+    admin: [Function (anonymous)],
+    approve: [Function (anonymous)],
+    approveNFT: [Function (anonymous)],
+    approveNFTs: [Function (anonymous)],
+    initialize: [Function (anonymous)],
+    isInitialized: [Function (anonymous)],
+    isSigner: [Function (anonymous)],
+    minAuthorizations: [Function (anonymous)],
+    pendingActions: [Function (anonymous)],
+    receiveNFTs: [Function (anonymous)],
+    setAdmin: [Function (anonymous)],
+    setGov: [Function (anonymous)],
+    signApprove: [Function (anonymous)],
+    signApproveNFT: [Function (anonymous)],
+    signApproveNFTs: [Function (anonymous)],
+    signSetAdmin: [Function (anonymous)],
+    signSetGov: [Function (anonymous)],
+    signalApprove: [Function (anonymous)],
+    signalApproveNFT: [Function (anonymous)],
+    signalApproveNFTs: [Function (anonymous)],
+    signalSetAdmin: [Function (anonymous)],
+    signalSetGov: [Function (anonymous)],
+    signedActions: [Function (anonymous)],
+    signers: [Function (anonymous)],
+    signersLength: [Function (anonymous)]
+  },
+  functions: {
+    'actionsNonce()': [Function (anonymous)],
+    'admin()': [Function (anonymous)],
+    'approve(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'initialize(address[])': [Function (anonymous)],
+    'isInitialized()': [Function (anonymous)],
+    'isSigner(address)': [Function (anonymous)],
+    'minAuthorizations()': [Function (anonymous)],
+    'pendingActions(bytes32)': [Function (anonymous)],
+    'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'setAdmin(address,address,uint256)': [Function (anonymous)],
+    'setGov(address,address,address,uint256)': [Function (anonymous)],
+    'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+    'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+    'signalApprove(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'signalSetAdmin(address,address)': [Function (anonymous)],
+    'signalSetGov(address,address,address)': [Function (anonymous)],
+    'signedActions(address,bytes32)': [Function (anonymous)],
+    'signers(uint256)': [Function (anonymous)],
+    'signersLength()': [Function (anonymous)],
+    actionsNonce: [Function (anonymous)],
+    admin: [Function (anonymous)],
+    approve: [Function (anonymous)],
+    approveNFT: [Function (anonymous)],
+    approveNFTs: [Function (anonymous)],
+    initialize: [Function (anonymous)],
+    isInitialized: [Function (anonymous)],
+    isSigner: [Function (anonymous)],
+    minAuthorizations: [Function (anonymous)],
+    pendingActions: [Function (anonymous)],
+    receiveNFTs: [Function (anonymous)],
+    setAdmin: [Function (anonymous)],
+    setGov: [Function (anonymous)],
+    signApprove: [Function (anonymous)],
+    signApproveNFT: [Function (anonymous)],
+    signApproveNFTs: [Function (anonymous)],
+    signSetAdmin: [Function (anonymous)],
+    signSetGov: [Function (anonymous)],
+    signalApprove: [Function (anonymous)],
+    signalApproveNFT: [Function (anonymous)],
+    signalApproveNFTs: [Function (anonymous)],
+    signalSetAdmin: [Function (anonymous)],
+    signalSetGov: [Function (anonymous)],
+    signedActions: [Function (anonymous)],
+    signers: [Function (anonymous)],
+    signersLength: [Function (anonymous)]
+  },
+  populateTransaction: {
+    'actionsNonce()': [Function (anonymous)],
+    'admin()': [Function (anonymous)],
+    'approve(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'initialize(address[])': [Function (anonymous)],
+    'isInitialized()': [Function (anonymous)],
+    'isSigner(address)': [Function (anonymous)],
+    'minAuthorizations()': [Function (anonymous)],
+    'pendingActions(bytes32)': [Function (anonymous)],
+    'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'setAdmin(address,address,uint256)': [Function (anonymous)],
+    'setGov(address,address,address,uint256)': [Function (anonymous)],
+    'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+    'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+    'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+    'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+    'signalApprove(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+    'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+    'signalSetAdmin(address,address)': [Function (anonymous)],
+    'signalSetGov(address,address,address)': [Function (anonymous)],
+    'signedActions(address,bytes32)': [Function (anonymous)],
+    'signers(uint256)': [Function (anonymous)],
+    'signersLength()': [Function (anonymous)],
+    actionsNonce: [Function (anonymous)],
+    admin: [Function (anonymous)],
+    approve: [Function (anonymous)],
+    approveNFT: [Function (anonymous)],
+    approveNFTs: [Function (anonymous)],
+    initialize: [Function (anonymous)],
+    isInitialized: [Function (anonymous)],
+    isSigner: [Function (anonymous)],
+    minAuthorizations: [Function (anonymous)],
+    pendingActions: [Function (anonymous)],
+    receiveNFTs: [Function (anonymous)],
+    setAdmin: [Function (anonymous)],
+    setGov: [Function (anonymous)],
+    signApprove: [Function (anonymous)],
+    signApproveNFT: [Function (anonymous)],
+    signApproveNFTs: [Function (anonymous)],
+    signSetAdmin: [Function (anonymous)],
+    signSetGov: [Function (anonymous)],
+    signalApprove: [Function (anonymous)],
+    signalApproveNFT: [Function (anonymous)],
+    signalApproveNFTs: [Function (anonymous)],
+    signalSetAdmin: [Function (anonymous)],
+    signalSetGov: [Function (anonymous)],
+    signedActions: [Function (anonymous)],
+    signers: [Function (anonymous)],
+    signersLength: [Function (anonymous)]
+  },
+  filters: {
+    'ClearAction(bytes32,uint256)': [Function (anonymous)],
+    'SignAction(bytes32,uint256)': [Function (anonymous)],
+    'SignalApprove(address,address,uint256,bytes32,uint256)': [Function (anonymous)],
+    'SignalApproveNFT(address,address,uint256,bytes32,uint256)': [Function (anonymous)],
+    'SignalApproveNFTs(address,address,uint256[],bytes32,uint256)': [Function (anonymous)],
+    'SignalPendingAction(bytes32,uint256)': [Function (anonymous)],
+    'SignalSetAdmin(address,address,bytes32,uint256)': [Function (anonymous)],
+    'SignalSetGov(address,address,address,bytes32,uint256)': [Function (anonymous)],
+    ClearAction: [Function (anonymous)],
+    SignAction: [Function (anonymous)],
+    SignalApprove: [Function (anonymous)],
+    SignalApproveNFT: [Function (anonymous)],
+    SignalApproveNFTs: [Function (anonymous)],
+    SignalPendingAction: [Function (anonymous)],
+    SignalSetAdmin: [Function (anonymous)],
+    SignalSetGov: [Function (anonymous)]
+  },
+  _runningEvents: {},
+  _wrappedEmits: {},
+  address: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  resolvedAddress: Promise {
+    '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+    [Symbol(async_id_symbol)]: 6769,
+    [Symbol(trigger_async_id_symbol)]: 6554
+  },
+  'actionsNonce()': [Function (anonymous)],
+  'admin()': [Function (anonymous)],
+  'approve(address,address,uint256,uint256)': [Function (anonymous)],
+  'approveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+  'approveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+  'initialize(address[])': [Function (anonymous)],
+  'isInitialized()': [Function (anonymous)],
+  'isSigner(address)': [Function (anonymous)],
+  'minAuthorizations()': [Function (anonymous)],
+  'pendingActions(bytes32)': [Function (anonymous)],
+  'receiveNFTs(address,address,uint256[])': [Function (anonymous)],
+  'setAdmin(address,address,uint256)': [Function (anonymous)],
+  'setGov(address,address,address,uint256)': [Function (anonymous)],
+  'signApprove(address,address,uint256,uint256)': [Function (anonymous)],
+  'signApproveNFT(address,address,uint256,uint256)': [Function (anonymous)],
+  'signApproveNFTs(address,address,uint256[],uint256)': [Function (anonymous)],
+  'signSetAdmin(address,address,uint256)': [Function (anonymous)],
+  'signSetGov(address,address,address,uint256)': [Function (anonymous)],
+  'signalApprove(address,address,uint256)': [Function (anonymous)],
+  'signalApproveNFT(address,address,uint256)': [Function (anonymous)],
+  'signalApproveNFTs(address,address,uint256[])': [Function (anonymous)],
+  'signalSetAdmin(address,address)': [Function (anonymous)],
+  'signalSetGov(address,address,address)': [Function (anonymous)],
+  'signedActions(address,bytes32)': [Function (anonymous)],
+  'signers(uint256)': [Function (anonymous)],
+  'signersLength()': [Function (anonymous)],
+  actionsNonce: [Function (anonymous)],
+  admin: [Function (anonymous)],
+  approve: [Function (anonymous)],
+  approveNFT: [Function (anonymous)],
+  approveNFTs: [Function (anonymous)],
+  initialize: [Function (anonymous)],
+  isInitialized: [Function (anonymous)],
+  isSigner: [Function (anonymous)],
+  minAuthorizations: [Function (anonymous)],
+  pendingActions: [Function (anonymous)],
+  receiveNFTs: [Function (anonymous)],
+  setAdmin: [Function (anonymous)],
+  setGov: [Function (anonymous)],
+  signApprove: [Function (anonymous)],
+  signApproveNFT: [Function (anonymous)],
+  signApproveNFTs: [Function (anonymous)],
+  signSetAdmin: [Function (anonymous)],
+  signSetGov: [Function (anonymous)],
+  signalApprove: [Function (anonymous)],
+  signalApproveNFT: [Function (anonymous)],
+  signalApproveNFTs: [Function (anonymous)],
+  signalSetAdmin: [Function (anonymous)],
+  signalSetGov: [Function (anonymous)],
+  signedActions: [Function (anonymous)],
+  signers: [Function (anonymous)],
+  signersLength: [Function (anonymous)]
+}
+> 
+> GMX_TIMELOCK = ethers.utils.getAddress("0xb87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2");
+'0xB87a436B93FFE9D75c5CFa7dEbE9A2c3A6eb26e2'
+> NEW_ADMIN = ethers.utils.getAddress("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266");
+'0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+> nonce = await tm.actionsNonce();
+BigNumber { _hex: '0x13', _isBigNumber: true }
+> actionHash = ethers.utils.solidityKeccak256(
+...   ["string", "address", "address", "uint256"],
+...   ["setAdmin", GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber()]
+... );
+'0x5e6597be0eadf606456829b62276a6c6a4e8bc0841039f9304971413e9660f98'
+> pending = await tm.pendingActions(actionHash);
+true
+> console.log("🔍 Pending action exists:", pending);
+🔍 Pending action exists: true
+undefined
+> signer1 = await ethers.getSigner("0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: -1024,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 0,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object]
+    },
+    _address: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 44,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: -1024,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 0,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    }
+  }
+}
+> signer2 = await ethers.getSigner("0x881690382102106b00a99E3dB86056D0fC71eee6");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: -1024,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 0,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object]
+    },
+    _address: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 44,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: -1024,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 0,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    }
+  }
+}
+> signer3 = await ethers.getSigner("0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13");
+SignerWithAddress {
+  _isSigner: true,
+  address: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+  _signer: JsonRpcSigner {
+    _isSigner: true,
+    provider: EthersProviderWrapper {
+      _isProvider: true,
+      _events: [],
+      _emitted: [Object],
+      disableCcipRead: false,
+      formatter: [Formatter],
+      anyNetwork: false,
+      _networkPromise: [Promise],
+      _maxInternalBlockNumber: -1024,
+      _lastBlockNumber: -2,
+      _maxFilterBlockRange: 10,
+      _pollingInterval: 4000,
+      _fastQueryDate: 0,
+      connection: [Object],
+      _nextId: 42,
+      _hardhatProvider: [LazyInitializationProviderAdapter],
+      _eventLoopCache: [Object],
+      _network: [Object]
+    },
+    _address: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+    _index: null
+  },
+  provider: EthersProviderWrapper {
+    _isProvider: true,
+    _events: [],
+    _emitted: { block: -2 },
+    disableCcipRead: false,
+    formatter: Formatter { formats: [Object] },
+    anyNetwork: false,
+    _networkPromise: Promise {
+      [Object],
+      [Symbol(async_id_symbol)]: 44,
+      [Symbol(trigger_async_id_symbol)]: 13
+    },
+    _maxInternalBlockNumber: -1024,
+    _lastBlockNumber: -2,
+    _maxFilterBlockRange: 10,
+    _pollingInterval: 4000,
+    _fastQueryDate: 0,
+    connection: { url: 'http://localhost:8545' },
+    _nextId: 42,
+    _hardhatProvider: LazyInitializationProviderAdapter {
+      _providerFactory: [AsyncFunction (anonymous)],
+      _emitter: [EventEmitter],
+      _initializingPromise: [Promise],
+      provider: [BackwardsCompatibilityProviderAdapter]
+    },
+    _eventLoopCache: { detectNetwork: null },
+    _network: {
+      name: 'arbitrum',
+      chainId: 42161,
+      ensAddress: null,
+      _defaultProvider: null
+    }
+  }
+}
+> tx1 = await tm.connect(signer1).signalSetAdmin(GMX_TIMELOCK, NEW_ADMIN);
+{
+  hash: '0x2b109a917e5e68a123039019a73b7cbaaf3f6d0fd08ae91066cb6df7275cbed0',
+  type: 2,
+  accessList: [],
+  blockHash: '0x14e2bf9fd951b3e9ca661e2a8bde776aa3d62344aa9283cfaf6bb6ae2af4da00',
+  blockNumber: 394171038,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x3D850Acfaa18c58b383fCA69d4d867Dc5Bb697c5',
+  gasPrice: BigNumber { _hex: '0x3ba425c0', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3ba6a21f', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0x014c33', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 23,
+  data: '0x75fd490c000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+  r: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  s: '0x0000000000000000000000003d850acfaa18c58b383fca69d4d867dc5bb697c5',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> logTx("signalSetAdmin by signer1", tx1);
+📦 Saved: signalSetAdmin by signer1: 0x2b109a917e5e68a123039019a73b7cbaaf3f6d0fd08ae91066cb6df7275cbed0
+undefined
+> 
+> try {
+...   tx2 = await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+  tx2 = await tm.connect(signer1).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+        ^^^^^
+
+Uncaught:
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+>   logTx("signSetAdmin by signer1", tx2);
+Uncaught ReferenceError: tx2 is not defined
+> } catch (e) {
+} catch (e) {
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+>   console.log("⚠️ signer1 already signed");
+⚠️ signer1 already signed
+undefined
+> }
+}
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+> 
+> tx3 = await tm.connect(signer2).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+{
+  hash: '0xad692109e3bee32025bc706c01c838fa0c2992e0c6b700f97bc751741876b2a4',
+  type: 2,
+  accessList: [],
+  blockHash: '0x641702211e3ea687325e13b370216992a0252a2f106b64ed712cad15f3045c69',
+  blockNumber: 394171039,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x881690382102106b00a99E3dB86056D0fC71eee6',
+  gasPrice: BigNumber { _hex: '0x3ba2fbe0', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3ba5291f', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 71,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000013',
+  r: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  s: '0x000000000000000000000000881690382102106b00a99e3db86056d0fc71eee6',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> logTx("signSetAdmin by signer2", tx3);
+📦 Saved: signSetAdmin by signer2: 0xad692109e3bee32025bc706c01c838fa0c2992e0c6b700f97bc751741876b2a4
+undefined
+> 
+> tx4 = await tm.connect(signer3).signSetAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+{
+  hash: '0xf6b2fa0d81aab74b1e03fdac093f24e63d4e858997e6be2b798172ea2119121e',
+  type: 2,
+  accessList: [],
+  blockHash: '0x2f1e5e70c4cb44fef172e6e0d06b33e1da6c2c9f320f454109ed364eaa7ab55f',
+  blockNumber: 394171040,
+  transactionIndex: 0,
+  confirmations: 1,
+  from: '0x2E5d207a4C0F7e7C52F6622DCC6EB44bC0fE1A13',
+  gasPrice: BigNumber { _hex: '0x3ba1f694', _isBigNumber: true },
+  maxPriorityFeePerGas: BigNumber { _hex: '0x3b9aca00', _isBigNumber: true },
+  maxFeePerGas: BigNumber { _hex: '0x3ba3de6b', _isBigNumber: true },
+  gasLimit: BigNumber { _hex: '0xe494', _isBigNumber: true },
+  to: '0x4E29d2ee6973E5Bd093df40ef9d0B28BD56C9e4E',
+  value: BigNumber { _hex: '0x00', _isBigNumber: true },
+  nonce: 4588,
+  data: '0xf466634b000000000000000000000000b87a436b93ffe9d75c5cfa7debe9a2c3a6eb26e2000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000013',
+  r: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  s: '0x0000000000000000000000002e5d207a4c0f7e7c52f6622dcc6eb44bc0fe1a13',
+  v: 28,
+  creates: null,
+  chainId: 42161,
+  wait: [Function (anonymous)]
+}
+> logTx("signSetAdmin by signer3", tx4);
+📦 Saved: signSetAdmin by signer3: 0xf6b2fa0d81aab74b1e03fdac093f24e63d4e858997e6be2b798172ea2119121e
+undefined
+> try {
+...   tx5 = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+  tx5 = await tm.connect(signer3).setAdmin(GMX_TIMELOCK, NEW_ADMIN, nonce.toNumber());
+        ^^^^^
+
+Uncaught:
+SyntaxError: await is only valid in async functions and the top level bodies of modules
+>   logTx("setAdmin by signer3", tx5);
+Uncaught ReferenceError: tx5 is not defined
+> } catch (e) {
+} catch (e) {
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+>   console.log("❌ setAdmin reverted without reason");
+❌ setAdmin reverted without reason
+undefined
+> }
+}
+^
+
+Uncaught SyntaxError: Unexpected token '}'
+> 
+> 
+❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊❊
 // TODO: Paste content here
